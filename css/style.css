@@ -1,0 +1,147 @@
+/* Colors */
+#colors {
+    color: #5680E9;
+    color: #84CEEB;
+    color: #5AB9EA;
+    color: #C1C8E4;
+    color: #8860D0;
+}
+
+/* Fonts */
+@font-face {
+    font-family: Oswald;
+    src: url('/fonts/Oswald-Regular.ttf');
+}
+
+@font-face {
+    font-family: Merriweather;
+    src: url('/fonts/Merriweather-Regular.ttf');
+}
+
+html, body {
+    font-family: Merriweather;
+    font-size: 14px;
+    height: 100%
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Oswald;
+}
+
+body > div.container {
+    padding-top: 110px;
+    min-height: 100%;
+    margin-bottom: -81px; /* height of footer */
+    padding-bottom: 81px;
+}
+
+a {
+    color: #5680E9;
+}
+
+a:hover {
+    color: #5680E9;
+    text-decoration: underline;
+}
+
+p {
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    border: 2px solid #5680E9;
+    border-radius: 5px;
+    color: #5680E9;
+    background: white;
+    font-weight: bold;
+}
+
+.btn:hover {
+    color: white;
+    background: #5680E9;
+}
+
+table.table th {
+    background: #5680E9;
+    color: white;
+    font-size: 15px;
+    font-weight: normal;
+    text-align: center;
+}
+
+table.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.table-hover tbody tr:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.x-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Top Bar */
+#top-bar {
+    background: #84CEEB;
+}
+
+#top-bar nav {
+    padding: 0 16px;
+}
+
+#top-bar a {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#top-bar a:hover {
+    color: white;
+}
+
+/* Header */
+#menu-bar {
+    background-image: linear-gradient(to right, #5AB9EA, #84CEEB, #8860D0);
+    /*background: #5680E9;*/
+    padding: 10px;
+    height: 97px;
+    width: 100%;
+}
+
+#menu-bar .home-link {
+    color: white;
+    font-size: 26px;
+    border: 3px solid white;
+    border-radius: 5px;
+}
+
+#menu-bar .home-link:hover {
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+#menu-bar a {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 17px;
+}
+
+#menu-bar a:hover {
+    color: white;
+}
+
+#menu-bar a.active {
+    color: white;
+    font-weight: bold;
+}
+
+#menu-bar li {
+    padding: 0 5px;
+}
+
+/* Footer */
+#footer {
+    background: #C1C8E4;
+    padding: 30px 0;
+    width: 100%;
+}
