@@ -61,7 +61,7 @@ $habits = $habit_obj->getHabitsFromStr($_GET['ids']);
         $task_str = $completed == 1 ? "task" : "tasks";
 
         ?>
-        <div class="habit-row">
+        <div class="habit-row my-5">
             <div class="row my-4 x-flex">
                 <div class="col-4 text-center"><h4><?php echo $habit['name'] ?></h4></div>
                 <div class="col-4 text-center"><?php echo $habit['description'] ?></div>

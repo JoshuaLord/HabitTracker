@@ -115,9 +115,9 @@ class Habit {
                     :unit,
                     :compute,
                     :create_date,
-                    0
+                    0,
                     :user_id
-                );";
+                )";
             $stmt = $this->_conn->prepare($sql);
             $values = [
                 ':name'         => $name,

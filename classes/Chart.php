@@ -22,14 +22,14 @@ class Chart {
                     compute,
                     start_date,
                     y_axis,
-                    habit_id,
+                    habit_id
                 ) VALUES (
                     0,
                     0,
                     0,
-                    :y_axis,
                     0,
-                    :habit_id,
+                    :y_axis,
+                    :habit_id
                 )";
             $stmt = $this->_conn->prepare($sql);
             $values = [
