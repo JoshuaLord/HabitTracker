@@ -66,6 +66,10 @@
                     <label class="form-check-label">Average</label>
                 </div>
             </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="compute" id="neither" value="0">
+                <label class="form-check-label">Neither</label>
+            </div>
 
             <input type="hidden" name="user_id" value="<?php echo $user_id ?>"/>
             <input type="hidden" name="days" id="days-hidden" value="NULL"/>
@@ -88,6 +92,7 @@
         });
         
         updateDaysValue();
+        updateComputeGroup();
     });
 
     /* The multiselect drop down list of days does not allow a value of more than one day 

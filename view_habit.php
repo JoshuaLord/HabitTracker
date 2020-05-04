@@ -7,11 +7,10 @@ $habit_obj = new Habit;
 $task_obj = new Task;
 $chart_obj = new Chart;
 
-
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 } else {
-    exit();
+    header("Location: habits.php");
 }
 
 $habit = $habit_obj->getHabit($id);
@@ -58,8 +57,36 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
 </head>
 <body>
     <?php include("inc/navbar.php");?>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header x-flex">
+                    <h4 class="modal-title" id="deleteModalLabel">Delete Habit: <u><?php echo $habit['name'] ?></u></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete your habit? This would include deleting all data associated with your habit and tasks.</p>
+                    <p>If you are sure, click the delete button.</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <a href="delete_habit.php?habit_id=<?php echo $habit['id'] ?>" class="btn btn-red">Delete Habit</a>
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="container">
-        <h1 class="mt-5 text-center display-4"><?php echo $habit['name']?></h1>
+        <div class="mt-5 row">
+            <div class="col-4"></div>
+            <h1 class="col-4 text-center display-4"><?php echo $habit['name']?></h1>
+            <h3 class="col-4 d-flex justify-content-end align-items-end">Ends on <?php echo date("M-d", $habit['end_date']) ?></h3>
+        </div>
         <p class="text-center"><?php echo $habit['description']?></p>
         <p class="days"><?php echo str_replace(",", ", ", $habit['days']); ?></p>
         <hr class="mb-3">
@@ -145,11 +172,16 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
                     <input form="form-99" type="checkbox" class="form-control task-checkbox" name="complete"/>
                 </td>
                 <td>
-                    <input form="form-99" type="submit" class="btn btm-sm" value="Create Task">
+                    <input form="form-99" type="submit" class="btn btm-sm" value="Add Task">
                 </td>
                 <input form="form-99" type="hidden" name="habit_id" value="<?php echo $habit['id']?>">
             </tr>
         </table>
+
+        <hr class="my-5">
+        <div class="x-flex">
+            <button type="button" class="btn btn-red" data-toggle="modal" data-target="#deleteModal">Delete Habit</button>
+        </div>
 
         <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
     </div>

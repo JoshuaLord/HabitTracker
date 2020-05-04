@@ -50,7 +50,7 @@ $habits = $habit_obj->getHabitsFromStr($_GET['ids']);
             <li><strong>Measureable</strong> - great habits can be tracked! Try to record a log of how your habit went and make sure to set some progress!</li>
             <li><strong>Attainable</strong> - habits should be just hard enough you have to push yourself a little, but not so hard you hate doing them.</li>
             <li><strong>Relevant</strong> - make sure your habit aligns with the idenity you want. Whether that be a more healthy lifestyle, self improvement, or even more relaxation time at the end of the day. Make sure your habit is relevant to you!</li>
-            <li><strong>Time-Oriented</strong> -  don't worry, we've got you covered on this. All habits are set for 21 days allowig you to focus in.</li>
+            <li><strong>Time-Oriented</strong> -  don't worry, we've got you covered on this. All habits are set for 21 days allowing you to focus in.</li>
         </ul>
         <p class="mt-4 mb-5">Did Great? Make it a little more challenging. Struggled some days? That's okay, lessen the time you spend or the difficulty of the task.</p>
 
@@ -58,24 +58,17 @@ $habits = $habit_obj->getHabitsFromStr($_GET['ids']);
 
         <?php foreach ($habits as $habit) { 
         $completed = $task_obj->getCompletedTotal($habit['id']);
+        $total = count($task_obj->getTasksForHabitId($habit['id']));
         $task_str = $completed == 1 ? "task" : "tasks";
 
         ?>
         <div class="habit-row my-5">
             <div class="row my-4 x-flex">
-                <div class="col-4 text-center"><h4><?php echo $habit['name'] ?></h4></div>
-                <div class="col-4 text-center"><?php echo $habit['description'] ?></div>
-                <div class="col-2 text-center"><?php echo $completed . " " . $task_str ?> completed</div>
-                <div class="col-2 text-center"><a class="btn" href="restart_habit.php?id='<?php echo $habit['id'] ?>'">Restart!</a></div>
-            </div>
-            <div class="row my-4 x-flex">
-                <div class="col-4 text-center"></h4></div>
-                <?php if (!empty($unit)) { // show the compute value ?>
-                <div class="col-4 text-center"><?php echo $task_obj->getProgressCompute($habit['id'], $complete) ?></div>
-                <?php } else { // ?>
-                <?php } ?>
-                <div class="col-2 text-center"><?php echo $completed . " " . $task_str ?> completed</div>
-                <div class="col-2 text-center"><a class="btn" href="restart_habit.php?id='<?php echo $habit['id'] ?>'">Restart!</a></div>
+                <div class="col-3 text-center"><h4><?php echo $habit['name'] ?></h4></div>
+                <div class="col-3 text-center"><?php echo $habit['description'] ?></div>
+                <div class="col-3 text-center"><?php echo $completed . " of " . $total . " " . $task_str ?> completed</div>
+                <div class="col-1 text-center"><a class="btn" href="extend_habit.php?id=<?php echo $habit['id'] ?>">Extend!</a></div>
+                <div class="col-2 text-center"><a class="btn btn-red" href="stop_habit.php?id=<?php echo $habit['id'] ?>">Stop Habit</a></div>
             </div>
         </div>
         <?php } ?>
