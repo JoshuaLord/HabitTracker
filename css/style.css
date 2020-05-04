@@ -61,6 +61,19 @@ p {
     background: #5680E9;
 }
 
+.btn-red {
+    border: 2px solid #C80000;
+    border-radius: 5px;
+    color: #C80000;
+    background: white;
+    font-weight: bold;
+}
+
+.btn-red:hover {
+    color: white;
+    background: #C80000;
+}
+
 table.table th {
     background: #5680E9;
     color: white;

@@ -226,6 +226,27 @@ class Task {
         }
     }
 
+    public function deleteTasksForHabit($habit_id) {
+        if (empty($habit_id)) {
+            return NULL;
+        }
+
+        try {
+            $sql = "
+                DELETE FROM 
+                    `tasks`
+                WHERE
+                    habit_id = :habit_id;";
+            $stmt = $this->_conn->prepare($sql);
+            $values = [
+                ':habit_id' => $habit_id
+            ];
+            $stmt->execute($values);
+        } catch (PDOException $e) {
+            exit("Failure to delete tasks for habit id: " . $habit_id . "\n" . $e->getMessage());
+        }
+    }
+
     /* Returns a two-dimensional array with the first being the task's progress
      * and the second array being the date of the task
      * Array can be accessed with array['progress'] and array['date']

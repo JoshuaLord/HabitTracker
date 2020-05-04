@@ -11,6 +11,7 @@ $user_id = $_SESSION['user_id'];
 $user = $user_obj->getUser($user_id);
 
 $habits = $habit_obj->getHabitsFromUser($user['id']);
+
 ?>
 
 <!doctype html>

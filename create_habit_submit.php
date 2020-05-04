@@ -13,12 +13,12 @@ $name = isset($_POST['name']) ? $_POST['name'] : NULL;
 $description = isset($_POST['description']) ? $_POST['description'] : NULL;
 $days = isset($_POST['days']) ? $_POST['days'] : NULL;
 $unit = isset($_POST['unit']) ? strtolower($_POST['unit']) : NULL;
-$compute = isset($_POST['compute']) ? strtolower($_POST['compute']) : 0;
+$compute = isset($_POST['compute']) ? $_POST['compute'] : 0;
 $create_date = time();
 $end_date = strtotime("+ 21 days");
 $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : NULL;
 
-$id = $habit_obj->createHabit($name, $description, $days, $unit, $compute, $create_date, $user_id);
+$id = $habit_obj->createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, NULL, $user_id);
 
 // need to create tasks for the habit
 $task_obj->createTasks($id, $end_date, $days);

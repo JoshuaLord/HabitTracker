@@ -96,7 +96,7 @@ class Habit {
         }
     }
 
-    public function createHabit($name, $description, $days, $unit, $compute, $create_date, $user_id) {
+    public function createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, $prev_id, $user_id) {
         try {
             $sql = "
                 INSERT INTO `habits` (
@@ -106,7 +106,9 @@ class Habit {
                     unit,
                     compute,
                     create_date,
+                    end_date,
                     complete,
+                    prev_id
                     user_id
                 ) VALUES (
                     :name,
@@ -115,7 +117,9 @@ class Habit {
                     :unit,
                     :compute,
                     :create_date,
+                    :end_date,
                     0,
+                    :prev_id,
                     :user_id
                 )";
             $stmt = $this->_conn->prepare($sql);
@@ -126,12 +130,71 @@ class Habit {
                 ':unit'         => $unit,
                 ':compute'      => $compute,
                 ':create_date'  => $create_date,
+                ':end_date'     => $end_date,
+                ':prev_id'      => $prev_id,
                 ':user_id'      => $user_id
             ];
             $stmt->execute($values);
             return $this->_conn->lastInsertId();
         } catch (PDOException $e) {
             exit("Failure to insert a habit.\n" . $e->getMessage());
+        }
+    }
+
+    /* This function updates a habit's data */    
+    public function extendHabit($habit) {
+        if (empty($habit['id'])) {
+            return NULL;
+        }
+
+        try {
+            $sql = "
+                UPDATE
+                    `habits`
+                SET
+                    name = :name,
+                    description = :description,
+                    days = :days,
+                    unit = :unit,
+                    compute = :compute,
+                    end_date = :end_date,
+                    complete = 0
+                WHERE
+                    id = :id";
+            $stmt = $this->_conn->prepare($sql);
+            $values = [
+                ':name'         => $habit['name'],
+                ':description'  => $habit['description'],
+                ':days'         => $habit['days'],
+                ':unit'         => $habit['unit'],
+                ':compute'      => $habit['compute'],
+                ':end_date'     => $habit['end_date'],
+                ':id'           => $habit['id'],
+            ];
+            $stmt->execute($values);
+        } catch (PDOException $e) {
+            exit("Failure to extend a habit for id: " . $habit['id'] . "\n" . $e->getMessage());
+        }
+    }
+
+    public function deleteHabit($id) {
+        if (empty($id)) {
+            return NULL;
+        }
+
+        try {
+            $sql = "
+                DELETE FROM 
+                    `habits`
+                WHERE
+                    id = :id;";
+            $stmt = $this->_conn->prepare($sql);
+            $values = [
+                ':id' => $id
+            ];
+            $stmt->execute($values);
+        } catch (PDOException $e) {
+            exit("Failure to delete habit for id: " . $id . "\n" . $e->getMessage());
         }
     }
 
@@ -169,6 +232,30 @@ class Habit {
         }
 
         return implode(',', $finished);
+    }
+
+    public function setComplete($id) {
+        if (empty($id)) {
+            return NULL;
+        }
+
+        try {
+            $sql = "
+                UPDATE 
+                    `habits`
+                SET
+                    complete = 1
+                WHERE
+                    id = :id";
+            $stmt = $this->_conn->prepare($sql);
+            $values = [
+                ':id' => $id
+            ];
+            $stmt->execute($values);
+            return true;
+        } catch (PDOException $e) {
+            exit("Failure to complete habit for id: " . $id . "\n" . $e->getMessage());
+        }
     }
 }
 ?>
