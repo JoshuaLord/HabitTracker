@@ -9,7 +9,7 @@ class Chart {
     }
 
     /* Creates a chart */
-    public function createChart($habit_id, $y_axis = 0) {
+    public function createChart($habit_id, $type = 0, $y_axis = 0) {
         if (empty($habit_id)) {
             return NULL;
         }
@@ -24,7 +24,7 @@ class Chart {
                     y_axis,
                     habit_id
                 ) VALUES (
-                    0,
+                    :type,
                     0,
                     0,
                     0,
@@ -33,6 +33,7 @@ class Chart {
                 )";
             $stmt = $this->_conn->prepare($sql);
             $values = [
+                ':type'     => $type,
                 ':y_axis' => $y_axis,
                 ':habit_id' => $habit_id
             ];
@@ -99,6 +100,9 @@ class Chart {
             case 0: // line chart
                 return $this->getLineScript($chart, $habit, $name, $index, $x_data, $x_data_labels);
             break;
+            case 1: // pie chart
+                return $this->getPieScript($chart, $habit, $name, $index);
+            break;
         }
     }
 
@@ -121,30 +125,10 @@ class Chart {
             }
         }
 
-        if ($chart['y_axis'] == 0) { // completed y_axis
-            $title = "Completed";
-            $legend = "";
-            $legend_display = "false";
-            
-            $tick_options = "stepSize: 1, max: 1,";
-            $callback = "
-            callback: function(label, index, labels) {
-                switch (label) {
-                    case 0:
-                        return 'No';
-                    case 1:
-                        return 'Yes';
-                }
-            }";
-        } else { // progress y_axis
-            $title = "Progress";
-            $legend = $habit['unit'];
-            $legend_display = "true";
-            
-            $tick_options = "";
-            $callback = "";
-        }
-
+        // progress y_axis
+        $title = "Progress";
+        $legend = $habit['unit'];
+        $legend_display = "true";
 
         $script = "";
         $script .= "var {$name}Canvas = document.getElementById('{$name}');";
@@ -163,18 +147,55 @@ class Chart {
         $script .= "            display: " . $legend_display;
         $script .= "        },";
         $script .= "        responsive: false,";
-        $script .= "        scales: {";
-        $script .= "            yAxes: [{";
-        $script .= "                ticks: {";
-        $script .=                      $tick_options;
-        $script .=                      $callback;
-        $script .= "                }";
-        $script .= "            }]";
-        $script .= "        },";
         $script .= "        title: {";
         $script .= "            display: true,";
         $script .= "            text:  '" . $title . "',";
-        $script .= "        },";
+        $script .= "        }";
+        $script .= "    }";
+        $script .= "});";
+        return $script;
+    }
+
+    /* Creates the script code necessary to create a pie chart via chart.js 
+     * Current functionality shows completed vs not completed tasks
+     * PARAMS:
+     * $chart - the chart object used. Contains the type of x and y axis, the frequency, etc 
+     * $habit - the habit of the chart
+     * $name - the name of the chart to use in the js
+     * $index - number of the chart on the page (1st, 2nd, 3rd, etc)
+     */
+    private function getPieScript($chart, $habit, $name, $index) {
+        // the name of the canvas grabbed is Chart_#Canvas where # is the index of the chart on the page
+        // the name of the chart itself is Chart_#
+
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
+        $task_obj = new Task;
+
+        $status_totals = $task_obj->getStatusTotals($habit['id'], $habit['create_date'], time());
+
+        $title = "Progress";
+        $legend = $habit['unit'];
+        $legend_display = "true";
+
+        $script = "";
+        $script .= "var {$name}Canvas = document.getElementById('{$name}');";
+        $script .= "var {$name} = new Chart({$name}Canvas, {";
+        $script .= "    type: 'pie',";
+        $script .= "    data: {";
+        $script .= "        labels: ['Complete', 'Not Complete'],";
+        $script .= "        datasets: [{";
+        $script .= "            data: [";
+        $script .=                  $status_totals['complete'] . ",";
+        $script .=                  $status_totals['not_complete'];
+        $script .=              "],";
+        $script .= "            backgroundColor: [ ";
+        $script .= "                '#77DF79',";
+        $script .= "                '#DFA995'";
+        $script .= "            ]";
+        $script .= "        }]";
+        $script .= "    },";
+        $script .= "    options: {";
+        $script .= "        responsive: false";
         $script .= "    }";
         $script .= "});";
         return $script;

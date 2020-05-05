@@ -110,7 +110,10 @@ $habits = $habit_obj->getHabitsFromUser($user['id']);
                     } ?>
                 </td>
                 <td  class="habit-stat">
-                    <?php echo $task_obj->getCompletedTotal($habit['id']) ?> completed tasks
+                    <?php
+                    $statuses = $task_obj->getStatusTotals($habit['id']);
+                    $task_str = $statuses['complete'] == 1 ? "task" : "tasks";
+                    echo $statuses['complete'] ?> completed <?php echo $task_str ?>
                 </td>
                 <td  class="habit-stat">
                     <?php echo count($task_obj->getTasksForHabitId($habit['id'], time())) ?> tasks left until <?php echo date("M j", $habit['end_date']) ?>

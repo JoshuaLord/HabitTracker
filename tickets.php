@@ -19,7 +19,9 @@
     <div class="container">
         <h1 class="mt-5 text-center">Tickets to Complete</h1>
         <hr class="mb-5">
+        <p>Updated habit submit chart creation for pie charts</p>
         <p>Ticket/Feature tracking system</p>
+        <p>Set NULL progress and have it not mess up the graph</p>
         <p>Dashboard have calendars of each task with the start and end date. X's if you completed, ''s if you didn't</p>
         <p>Improve the look of the days a habit is completed on view habit page</p>
         <p>Dashboard show missed tasks from yesterday</p>
