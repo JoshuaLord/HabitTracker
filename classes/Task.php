@@ -309,23 +309,28 @@ class Task {
         return $array;
     }
 
-    // Returns the total number of completed tasks for the supplied habit
-    public function getCompletedTotal($habit_id) {
+    /* Returns the total number of complete and not complete tasks for the supplied habit
+     * RETURNS: an array with two elements, complete and not_complete 
+    */
+    public function getStatusTotals($habit_id, $start_date = NULL, $end_date = NULL) {
         if (empty($habit_id)) {
             return NULL;
         }
 
-        $tasks = $this->getTasksForHabitId($habit_id);
+        $tasks = $this->getTasksForHabitId($habit_id, $start_date, $end_date);
 
-        $sum = 0;
+        $array['complete'] = 0;
+        $array['not_complete'] = 0;
 
         foreach ($tasks as $task) {
-            if (!empty($task['complete'])) {
-                $sum++;
+            if ($task['complete'] == 0) {
+                $array['not_complete']++;
+            } else {
+                $array['complete']++;
             }
         }  
 
-        return $sum;
+        return $array;
     }
 
     /* Returns the total or average of the progress column of completed tasks for the supplied habit

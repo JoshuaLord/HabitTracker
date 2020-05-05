@@ -57,9 +57,9 @@ $habits = $habit_obj->getHabitsFromStr($_GET['ids']);
         <p class="text-center mb-5"><strong>Remember! All habits are set for 21 days!</strong></p>
 
         <?php foreach ($habits as $habit) { 
-        $completed = $task_obj->getCompletedTotal($habit['id']);
+        $statuses = $task_obj->getStatusTotals($habit['id']);
         $total = count($task_obj->getTasksForHabitId($habit['id']));
-        $task_str = $completed == 1 ? "task" : "tasks";
+        $task_str = $statuses['complete'] == 1 ? "task" : "tasks";
 
         ?>
         <div class="habit-row my-5">
