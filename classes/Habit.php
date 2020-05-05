@@ -96,7 +96,7 @@ class Habit {
         }
     }
 
-    public function createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, $prev_id, $user_id) {
+    public function createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, $user_id) {
         try {
             $sql = "
                 INSERT INTO `habits` (
@@ -108,7 +108,6 @@ class Habit {
                     create_date,
                     end_date,
                     complete,
-                    prev_id
                     user_id
                 ) VALUES (
                     :name,
@@ -119,7 +118,6 @@ class Habit {
                     :create_date,
                     :end_date,
                     0,
-                    :prev_id,
                     :user_id
                 )";
             $stmt = $this->_conn->prepare($sql);
@@ -131,7 +129,6 @@ class Habit {
                 ':compute'      => $compute,
                 ':create_date'  => $create_date,
                 ':end_date'     => $end_date,
-                ':prev_id'      => $prev_id,
                 ':user_id'      => $user_id
             ];
             $stmt->execute($values);

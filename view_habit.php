@@ -222,7 +222,6 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
     } else {
         $data = $task_obj->getProgressForChart($chart['habit_id'], $habit['create_date'], time());
     }
-
     echo $chart_obj->getScript($chart, $index, $data['compute'], $data['date']);
     } ?>
     </script>

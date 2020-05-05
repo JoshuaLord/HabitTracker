@@ -19,7 +19,7 @@
     <div class="container">
         <h1 class="mt-5 text-center">Tickets to Complete</h1>
         <hr class="mb-5">
-        <p>Do we need getCompleteForChart() in Tasks? Can't we access that from a normal array of tasks?</p>
+        <p>Updated habit submit chart creation for pie charts</p>
         <p>Ticket/Feature tracking system</p>
         <p>Set NULL progress and have it not mess up the graph</p>
         <p>Dashboard have calendars of each task with the start and end date. X's if you completed, ''s if you didn't</p>

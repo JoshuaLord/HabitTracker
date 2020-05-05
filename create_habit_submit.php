@@ -18,16 +18,17 @@ $create_date = time();
 $end_date = strtotime("+ 21 days");
 $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : NULL;
 
-$id = $habit_obj->createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, NULL, $user_id);
+$id = $habit_obj->createHabit($name, $description, $days, $unit, $compute, $create_date, $end_date, $user_id);
 
 // need to create tasks for the habit
 $task_obj->createTasks($id, $end_date, $days);
 
-// need to create the chart for the habit
-$chart_obj->createChart($id, 0);
+// create a pie chart comparing completed tasks with not completed tasks
+$chart_obj->createChart($id, 1, 0);
 
 if (!empty($unit)) {
-    $chart_obj->createChart($id, 1);
+    // create a line chart with the task's progress as the y-axis
+    $chart_obj->createChart($id, 0, 1);
 }
 
 header("Location: view_habit.php?id=" . $id);

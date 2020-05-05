@@ -9,7 +9,7 @@ class Chart {
     }
 
     /* Creates a chart */
-    public function createChart($habit_id, $y_axis = 0) {
+    public function createChart($habit_id, $type = 0, $y_axis = 0) {
         if (empty($habit_id)) {
             return NULL;
         }
@@ -24,7 +24,7 @@ class Chart {
                     y_axis,
                     habit_id
                 ) VALUES (
-                    0,
+                    :type,
                     0,
                     0,
                     0,
@@ -33,6 +33,7 @@ class Chart {
                 )";
             $stmt = $this->_conn->prepare($sql);
             $values = [
+                ':type'     => $type,
                 ':y_axis' => $y_axis,
                 ':habit_id' => $habit_id
             ];
