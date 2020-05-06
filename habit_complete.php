@@ -66,7 +66,7 @@ $habits = $habit_obj->getHabitsFromStr($_GET['ids']);
             <div class="row my-4 x-flex">
                 <div class="col-3 text-center"><h4><?php echo $habit['name'] ?></h4></div>
                 <div class="col-3 text-center"><?php echo $habit['description'] ?></div>
-                <div class="col-3 text-center"><?php echo $completed . " of " . $total . " " . $task_str ?> completed</div>
+                <div class="col-3 text-center"><?php echo $statuses['complete'] . " of " . $total . " " . $task_str ?> completed</div>
                 <div class="col-1 text-center"><a class="btn" href="extend_habit.php?id=<?php echo $habit['id'] ?>">Extend!</a></div>
                 <div class="col-2 text-center"><a class="btn btn-red" href="stop_habit.php?id=<?php echo $habit['id'] ?>">Stop Habit</a></div>
             </div>
