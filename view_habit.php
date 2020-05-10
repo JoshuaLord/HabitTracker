@@ -16,8 +16,28 @@ if (isset($_GET['id'])) {
 $habit = $habit_obj->getHabit($id);
 
 // grab tasks in a 7 day range
-$start = strtotime(date("Y-m-d") . "- 3 days");
-$end = strtotime(date("Y-m-d") . "+ 4 days");
+if (isset($_GET['move'])) {
+    // make sure there is at least one task in the week the user is grabbing
+    $tasksPrev = $task_obj->getTasksForHabitId($id, NULL, strtotime(date("Y-m-d", $_SESSION['end_date']) . "- 7 days"));
+    $tasksForw = $task_obj->getTasksForHabitId($id, strtotime(date("Y-m-d", $_SESSION['start_date']) . "+ 7 days"), NULL);
+
+    if ($_GET['move'] == -1 && count($tasksPrev) > 0) { // prev one week
+        $start =  strtotime(date("Y-m-d", $_SESSION['start_date']) . "- 7 days");
+        $end = strtotime(date("Y-m-d", $_SESSION['end_date']) . "- 7 days");
+    } else if ($_GET['move'] == 1 && count($tasksForw) > 0) { // forward one week
+        $start =  strtotime(date("Y-m-d", $_SESSION['start_date']) . "+ 7 days");
+        $end = strtotime(date("Y-m-d", $_SESSION['end_date']) . "+ 7 days");
+    } else {
+        $start = $_SESSION['start_date'];
+        $end = $_SESSION['end_date'];
+    }
+} else { // equal today
+    $start = strtotime(date("Y-m-d") . "- 3 days");
+    $end = strtotime(date("Y-m-d") . "+ 3 days");
+}
+
+$_SESSION['start_date'] = $start;
+$_SESSION['end_date'] = $end;
 
 $tasks = $task_obj->getTasksForHabitId($id, $start, $end); // tasks for the habit
 usort($tasks, function ($a, $b) {
@@ -83,9 +103,9 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
 
     <div class="container">
         <div class="mt-5 row">
-            <div class="col-4"></div>
-            <h1 class="col-4 text-center display-4"><?php echo $habit['name']?></h1>
-            <h3 class="col-4 d-flex justify-content-end align-items-end">Ends on <?php echo date("M-d", $habit['end_date']) ?></h3>
+            <div class="col-2"></div>
+            <h1 class="col-8 text-center display-4"><?php echo $habit['name']?></h1>
+            <h3 class="col-2 d-flex justify-content-end align-items-end">Ends on <?php echo date("M d", $habit['end_date']) ?></h3>
         </div>
         <p class="text-center"><?php echo $habit['description']?></p>
         <p class="days"><?php echo str_replace(",", ", ", $habit['days']); ?></p>
@@ -101,45 +121,60 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
         <h4>Days I Complete My Habit</h4>
         <p><?php echo str_replace(",", ", ", $habit['days']); ?></p>
 
-        <h4 class="mb-4">Tasks from <?php echo date('F j', $start); ?> to <?php echo date('F j', $end); ?></h4>
+        <h2 class="text-center">Tasks from <?php echo date("M d", $start) ?> to <?php echo date("M d", $end) ?></h2>
+        <div class="row my-3">
+            <div class="col-4">
+                <a class="btn" href="/view_habit.php?move=-1&id=<?php echo $id ?>"><</a>
+            </div>
+            <div class="col-4 text-center">
+                <a class="btn" href="/view_habit.php?id=<?php echo $id ?>">Today</a>
+            </div>
+            <div class="col-4">
+                <a class="btn float-right" href="/view_habit.php?move=1&id=<?php echo $id ?>">></a>
+            </div>
+        </div>
         <table class="table table-striped table-hover mb-5" id="tasks-table">
-            <tr>
-                <th>Date</th>
-                <th>Log (Description of What You Did)</th>
-                <?php if ($habit['unit']) { ?>                
-                <th>Progress (Number if Applicable)</th>
-                <?php } ?>
-                <th>Completed</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Log (Description of What You Did)</th>
+                    <?php if ($habit['unit']) { ?>                
+                    <th>Progress (Number if Applicable)</th>
+                    <?php } ?>
+                    <th>Completed</th>
+                </tr>
+            </thead>
+            <tbody>
             <?php $count = 0 ?>
             <?php foreach ($tasks as $task) { ?>
             <?php $formid = "form" . $count++; ?>
-            <tr>
-                <td width=250>
-                    <form id="<?php echo $formid?>" method="POST" action="update_task.php" target="dummyframe">
-                        <?php echo date("l, F jS", $task['date']); ?>
-                    </form>
-                </td>
-                <td width=400>
-                    <textarea form="<?php echo $formid?>" type="text" class="form-control" name="log" value="" onChange="this.form.submit()"><?php echo $task['log']; ?></textarea>
-                </td>
-                <?php if ($habit['unit']) { ?>
-                <td>
-                    <div class="input-group">
-                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" id="progress" name="progress" step="0.1" 
-                            value="<?php echo $task['progress']; ?>" onChange="this.form.submit()">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><?php echo $habit['unit']?></span>
+                <tr>
+                    <td width=250>
+                        <form id="<?php echo $formid?>" method="POST" action="update_task.php" target="dummyframe">
+                            <?php echo date("l, F jS", $task['date']); ?>
+                        </form>
+                    </td>
+                    <td width=400>
+                        <textarea form="<?php echo $formid?>" type="text" class="form-control" name="log" value="" onChange="this.form.submit()"><?php echo $task['log']; ?></textarea>
+                    </td>
+                    <?php if ($habit['unit']) { ?>
+                    <td>
+                        <div class="input-group">
+                            <input form="<?php echo $formid?>" type="number" class="form-control text-center" name="progress" step="0.1" 
+                                value="<?php echo $task['progress']; ?>" onChange="this.form.submit()">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><?php echo $habit['unit']?></span>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <?php } ?>
-                <td width=100>
-                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
-                </td>
-                <input form="<?php echo $formid?>" type="hidden" name="task_id" value="<?php echo $task['id']?>">
-            </tr>
+                    </td>
+                    <?php } ?>
+                    <td width=100>
+                        <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
+                    </td>
+                    <input form="<?php echo $formid?>" type="hidden" name="task_id" value="<?php echo $task['id']?>">
+                </tr>
             <?php } ?>
+            </tbody>
         </table>
 
         <h4 class="mb-4">Log a Task</h4>
@@ -188,21 +223,6 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
 
     <?php include("inc/externals.php"); ?>
     <?php include("inc/datatables.php"); ?>
-    <!-- Draggable Library -->
-    <!-- Entire bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.bundle.js"></script>
-    <!-- legacy bundle for older browsers (IE11) -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.bundle.legacy.js"></script>
-    <!-- Draggable only -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.js"></script>
-    <!-- Sortable only -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/sortable.js"></script>
-    <!-- Droppable only -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/droppable.js"></script>
-    <!-- Swappable only -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/swappable.js"></script>
-    <!-- Plugins only -->
-    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/plugins.js"></script>
 
     <!-- Chart.js Library -->
     <script src="js/Chart.bundle.js"></script>
