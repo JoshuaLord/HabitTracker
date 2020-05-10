@@ -179,7 +179,6 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
 
         <h4 class="mb-4">Log a Task</h4>
         <table class="table table-striped table-hover" id="tasks-table">
-            <thead>
             <tr>
                 <th>Date</th>
                 <th>Log (Description of What You Did)</th>
