@@ -85,7 +85,7 @@ $habit = $habit_obj->getHabit($id);
             <input type="hidden" name="user_id" value="<?php echo $user_id ?>"/>
             <input type="hidden" name="id" value="<?php echo $id ?>"/>
             <input type="hidden" name="days" id="days-hidden" value="NULL"/>
-            <button type="submit" class="btn btn-primary">Create Habit</button>
+            <button type="submit" class="btn btn-primary">Extend Habit</button>
         </form>
     </div>
 
