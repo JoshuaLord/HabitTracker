@@ -45,17 +45,24 @@ class Task {
         }
     }
 
-    public function getTasksForUserId($user_id, $start_date = NULL, $end_date = NULL) {
+    public function getTasksForUserId($user_id, $start_date = NULL, $end_date = NULL, $complete = NULL) {
         if (empty($user_id)) {
             return NULL;
         }
         
-        if (empty($start_date)) {
+        if (is_null($start_date)) {
             $start_date = 0; // the beginning
         }
 
-        if (empty($end_date)) {
+        if (is_null($end_date)) {
             $end_date = 2000000000; // a very long time from now
+        }
+
+        $comp_value = [];
+        $comp_str = "";
+        if (!is_null($complete)) {
+            $comp_value[':complete'] = $complete;
+            $comp_str = "AND t.complete = :complete";
         }
 
         try {
@@ -69,13 +76,15 @@ class Task {
                 WHERE
                     h.user_id = :user_id AND
                     t.date >= :start_date AND
-                    t.date <= :end_date";
+                    t.date <= :end_date " .
+                    $comp_str;
             $stmt = $this->_conn->prepare($sql);
             $values = [
                 ':user_id' => $user_id,
                 ':start_date' => $start_date,
                 ':end_date' => $end_date
             ];
+            $values = array_merge($values, $comp_value);
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);    
         } catch(PDOException $e) {
@@ -295,11 +304,7 @@ class Task {
         $date = [];
 
         foreach ($tasks as $task) {
-            if (empty($task['complete'])) {
-                array_push($complete, 0);
-            } else {
-                array_push($complete, $task['complete']);
-            }
+            array_push($complete, $task['complete']);
             array_push($date, $task['date']);
         }  
 

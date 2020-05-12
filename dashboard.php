@@ -19,7 +19,13 @@ $picture = $file_obj->getFile($user['file_id']);
 $start = strtotime(date("Y-m-d 00:00:00"));
 $end = strtotime(date("Y-m-d 23:59:59"));
 
-$tasks = $task_obj->getTasksForUserId($user_id, $start, $end);
+$tasks_today = $task_obj->getTasksForUserId($user_id, $start, $end);
+
+// grab missed tasks from yesterday
+$start = strtotime(date("Y-m-d 00:00:00") . "- 1 days");
+$end = strtotime(date("Y-m-d 23:59:59") . "- 1 days");
+
+$missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
 ?>
 
 <!doctype html>
@@ -62,6 +68,22 @@ $tasks = $task_obj->getTasksForUserId($user_id, $start, $end);
     <div class="container">
         <h1 class="text-center mt-5 display-4">Dashboard - <?php echo date("l F jS, Y") ?></h1>
         <hr class="mb-5">
+
+        <div class="container mt-5 mb-5">
+            <div class="row">
+                <div class="col-6 d-flex justify-content-center">
+                    <img src="data:<?php echo $picture['type'] ?>;base64, <?php echo base64_encode($picture['data']) ?>" id="profile_picture"/>
+                </div>
+                <div class="col-6" id="five_years">
+                    <h2>Myself in Five Years</h2>
+                    <hr>
+                    <?php echo str_replace("\r\n", "<br><br>", $user['five_year']) ?>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
         <h2 class="text-center mb-3"><u>Tasks for the Day</u></h2>
         <table class="table table-striped table-hover" id="tasks-table">
             <tr>
@@ -72,7 +94,7 @@ $tasks = $task_obj->getTasksForUserId($user_id, $start, $end);
             </tr>
             <?php
             $count = 0;
-            foreach ($tasks as $task) { 
+            foreach ($tasks_today as $task) { 
                 $habit = $habit_obj->getHabit($task['habit_id']); 
                 $formid = "form" . $count++; 
             ?>
@@ -101,20 +123,46 @@ $tasks = $task_obj->getTasksForUserId($user_id, $start, $end);
             <?php } ?>
         </table>
 
-        <hr class="my-3">
-
-        <div class="container mt-5 mb-5">
-            <div class="row">
-                <div class="col-6 d-flex justify-content-center">
-                    <img src="data:<?php echo $picture['type'] ?>;base64, <?php echo base64_encode($picture['data']) ?>" id="profile_picture"/>
-                </div>
-                <div class="col-6" id="five_years">
-                    <h2>Myself in Five Years</h2>
-                    <hr>
-                    <?php echo str_replace("\r\n", "<br><br>", $user['five_year']) ?>
-                </div>
-            </div>
-        </div>
+        <?php if (count($missed_tasks) > 0) { ?>
+        <h2 class="text-center my-3"><u>Tasks Missed Yesterday</u></h2>
+        <table class="table table-striped table-hover" id="tasks-table">
+            <tr>
+                <th>Task</th>
+                <th>Log</th>
+                <th>Progress</th>
+                <th>Completed</th>
+            </tr>
+            <?php
+            $count = 0;
+            foreach ($missed_tasks as $task) { 
+                $habit = $habit_obj->getHabit($task['habit_id']); 
+                $formid = "form" . $count++; 
+            ?>
+            <tr>
+                <form id="<?php echo $formid?>" method="POST" action="update_task.php" target="dummyframe"></form>
+                <td width=225 class="habit_link" style="cursor: pointer" onclick="document.location = 'view_habit.php?id=<?php echo $habit['id']?>'"><h5><?php echo $habit['name'] ?></h5></td>
+                <td width=300 <?php if (empty($habit['unit'])) echo "colspan='2'" ?>>
+                    <textarea form="<?php echo $formid?>" type="text" class="form-control" name="log" onChange="this.form.submit()"><?php echo $task['log']; ?></textarea>
+                </td>
+                <?php if ($habit['unit']) { ?>
+                <td width=200>
+                    <div class="input-group">
+                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" id="progress" name="progress" 
+                                value="<?php if (!empty($task['progress'])) echo $task['progress']; ?>" <?php if (empty($habit['unit'])) echo "disabled"?> onChange="this.form.submit()">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><?php echo $habit['unit']?></span>
+                        </div>
+                    </div>
+                </td>
+                <?php }?>
+                <td width=100>
+                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" id="complete" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
+                </td>
+                <input form="<?php echo $formid?>" type="hidden" name="task_id" value="<?php echo $task['id']?>">
+            </tr>
+            <?php } ?>
+        </table>
+        <?php } ?>
         
         <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
     </div>
