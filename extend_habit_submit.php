@@ -9,8 +9,9 @@ $chart_obj = new Chart;
 
 if (isset($_POST['id'])) {
     $id = $_POST['id'];
-} else {
-    header("Location: habits.php");
+} else {    
+    $_POST['error_message'] = "Error: Could not extend habit. Please try again later.";
+    header("Location: dashboard.php");
 }
 
 date_default_timezone_set('America/New_York');

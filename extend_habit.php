@@ -5,8 +5,9 @@ $habit_obj = new Habit;
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-} else {
-    header("Location: habits.php");
+} else {    
+    $_POST['error_message'] = "Error: Could not extend habit. Please try again later.";
+    header("Location: dashboard.php");
 }
 
 $habit = $habit_obj->getHabit($id);

@@ -9,3 +9,6 @@ composer.lock
 ## Diff Files ##
 htd.diff
 htp.diff
+
+## Log Files ##
+logs/

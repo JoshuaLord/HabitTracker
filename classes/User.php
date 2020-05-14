@@ -38,12 +38,13 @@ class User {
             $stmt->execute($values);
             return $this->_conn->lastInsertID();
         } catch (PDOException $e) {
-            exit("Failure to insert user.\n" . $e->getMessage());
+            debugLog("User_errors", "Error creating user", $e, $sql, $values);
+            return NULL;
         }
     }
 
-    public function updateUser($user_id, $first_name, $last_name, $email, $password, $file_id, $five_year) {
-        if (empty($user_id)) {
+    public function updateUser($id, $first_name, $last_name, $email, $password, $file_id, $five_year) {
+        if (empty($id)) {
             return NULL;
         }
 
@@ -86,13 +87,14 @@ class User {
                 SET 
                     " . implode(", ", $a_sql) . "
                 WHERE
-                    id = :user_id";                
+                    id = :id";                
             $stmt = $this->_conn->prepare($sql);
-            $values[':user_id'] = $user_id;
+            $values[':id'] = $id;
             $stmt->execute($values);
             return true;
         } catch (PDOException $e) {
-            exit("Failure to update user.\n" . $e->getMessage());
+            debugLog("User_errors", "Error updating user for id: {$id}", $e, $sql, $values);
+            return false;
         }
     }
 
@@ -117,7 +119,8 @@ class User {
             $stmt->execute($values);            
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get user from id: " . $id . "\n" . $e->getMessage());
+            debugLog("User_errors", "Error getting user for id: {$id}", $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -142,7 +145,8 @@ class User {
             $stmt->execute($values);            
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get user from email: " . $email . "\n" . $e->getMessage());
+            debugLog("User_errors", "Error getting user for from email: {$email}", $e, $sql, $values);
+            return NULL;
         }
     }
 }

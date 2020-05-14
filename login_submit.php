@@ -13,7 +13,7 @@ $password = isset($_POST['password']) ? $_POST['password'] : NULL;
 $user = $user_obj->getUserFromEmail($email);
 
 if (!$encrypt_obj->verifyPassword($password, $user['password'])) {
-    exit("Unable to verify password.");
+    header("Location: login.php");
 }
 
 $_SESSION['user_id'] = $user['id'];

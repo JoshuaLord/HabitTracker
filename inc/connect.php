@@ -18,7 +18,7 @@ try {
     $_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $_conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 } catch (PDOException $e) {
-    echo $e;
+    debugLog("Connect_errors", "Error connecting to database.", $e);
     exit();
 }
 
@@ -28,3 +28,50 @@ function pdo_sql_debug($sql,$placeholders){
     }
     return $sql;
 }
+
+function generateCallTrace()
+{
+    $e = new Exception();
+    $trace = explode("\n", $e->getTraceAsString());
+    // reverse array to make steps line up chronologically
+    $trace = array_reverse($trace);
+    array_shift($trace); // remove {main}
+    array_pop($trace); // remove call to this method
+    $length = count($trace);
+    $result = array();
+   
+    for ($i = 0; $i < $length; $i++)
+    {
+        $result[] = ($i + 1)  . ')' . substr($trace[$i], strpos($trace[$i], ' ')); // replace '#someNum' with '$i)', set the right ordering
+    }
+   
+    return "\t" . implode("\n\t", $result);
+}
+
+function debugLog($log_filename, $message, $exception = NULL, $sql = NULL, $values = NULL) {
+    $backtrace = debug_backtrace();
+    $caller = array_shift($backtrace);
+    $file = substr($caller['file'], strlen($_SERVER['DOCUMENT_ROOT']) + 1); // don't need the starting /
+    $line = $caller['line'];    
+
+    $content  = "--------------------------------------------------------------" . "\n";
+    $content .= "{$file} on Line #{$line} | " . date("D Y-m-d h:i:s A") . "\n";
+    $content .= "--------------------------------------------------------------" . "\n\n";
+    $content .= "{$message}" . "\n\n";
+
+    if (!empty($exception)) {
+        $content .= "{$exception->getMessage()}" . "\n\n";
+    }
+
+    if (!empty($sql)) {
+        if (!empty($values)) {
+            $sql = pdo_sql_debug($sql, $values);
+        }   
+
+        $content .= "{$sql}" . "\n";
+    }
+
+    $content .= "\n";
+
+    file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $log_filename . ".log", $content, FILE_APPEND);
+}   

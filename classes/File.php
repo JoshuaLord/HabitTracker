@@ -29,7 +29,8 @@ class File {
             $stmt->execute($values);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get file id: " . $id . "\n" . $e->getMessage());
+            debugLog("File_errors", "Failure to get file for id: " . $id, $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -62,7 +63,8 @@ class File {
             $stmt->execute($values);
             return $this->_conn->lastInsertId();
         } catch (PDOException $e) {
-            exit("Failure to upload file.\n" . $e->getMessage());
+            debugLog("File_errors", "Failure to upload file", $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -87,7 +89,8 @@ class File {
             ];
             $stmt->execute($values);
         } catch (PDOException $e) {
-            exit("Failure to delete file id: " . $id . "\n" . $e->getMessage());
+            debugLog("File_errors", "Failure to delete file for id: " . $id, $e, $sql, $values);
+            return NULL;
         }
     }
 }

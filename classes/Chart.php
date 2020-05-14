@@ -40,7 +40,8 @@ class Chart {
             $stmt->execute($values);
             return $this->_conn->lastInsertId();
         } catch (PDOException $e) {
-            exit("Failure to create chart." . $e->getMessage());
+            debugLog("Chart_errors", "Error creating a chart", $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -64,7 +65,8 @@ class Chart {
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get charts for habit id: " . $habit_id . "\n" . $e->getMessage());
+            debugLog("Chart_errors", "Error getting charts for habit id: " . $habit_id, $e, $sql, $values);
+            return NULL;
         }
     }
 
