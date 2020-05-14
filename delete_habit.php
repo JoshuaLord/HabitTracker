@@ -7,8 +7,9 @@ $task_obj = new Task;
 
 if (isset($_GET['habit_id'])) {
     $habit_id = $_GET['habit_id'];
-} else {
-    exit("Did not supply habit id.");
+} else {    
+    $_POST['error_message'] = "Error: Could not delete habit. Please try again later.";
+    header("Location: dashboard.php");
 }
 
 $task_obj->deleteTasksForHabit($habit_id);

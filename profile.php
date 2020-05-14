@@ -7,6 +7,11 @@ $file_obj = new File;
 
 $user_id = $_SESSION['user_id'];
 
+if (empty($user_id)) {
+    $_POST['error_message'] = "An error has occured. Please try again.";
+    header("Location: dashboard.php");
+}
+
 $user = $user_obj->getUser($user_id);
 
 $file_id = $user['file_id'];

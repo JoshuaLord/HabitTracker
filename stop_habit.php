@@ -6,13 +6,14 @@ $habit_obj = new Habit;
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 } else {
-    header("Location: habits.php");
+    $_POST['error_message'] = "Error: Could not stop habit. Please try again later.";
+    header("Location: dashboard.php");
 }
 
-if ($habit_obj->setComplete($id)) {
-    echo "Updated";
+if (!$habit_obj->setComplete($id)) {
+    $_POST['error_message'] = "Error: Could not stop habit. Please try again later.";
 }
-echo $id;
-//header("Location: dashboard.php");
+
+header("Location: dashboard.php");
 
 ?>

@@ -8,6 +8,10 @@ $task_obj = new Task;
 
 $user_id = $_SESSION['user_id'];
 
+if (empty($user_id)) {
+    header("Location: dashboard.php");
+}
+
 $user = $user_obj->getUser($user_id);
 
 $habits = $habit_obj->getHabitsFromUser($user['id']);

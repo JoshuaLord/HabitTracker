@@ -41,7 +41,8 @@ class Task {
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
-            exit("Failure to get tasks.\n" . $e->getMessage());
+            debugLog("Task_errors", "Failure to get tasks for habit_id: " . $habit_id, $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -88,16 +89,16 @@ class Task {
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);    
         } catch(PDOException $e) {
-            exit("Failure to get tasks for user id: " . $user_id . "\n" . $e->getMessage());
+            debugLog("Task_errors", "Failure to get tasks for user_id: " . $user_id, $e, $sql, $values);
+            return NULL;
         }
     }
 
-    /* Creates and inserts the tasks for a Habit when the habit is created
+    /* Creates tasks for a habit on habit creation
      * 
      * PARAMS
      * $habit_id    - ID of the habit the tasks are for
      * $end_date    - last date a task should be created
-     * $frequency   - daily (0), weekly (1), monthly (1) 
      * $days        - a string of days separated by commas, i.e 'Monday, Wednesday, Thursday'
      * 
      * RETURNS 
@@ -154,7 +155,7 @@ class Task {
                 $stmt->execute($values);
                 $inserted++;
             } catch (PDOException $e) {
-                exit("Failure to insert task for habit id: " . $habit_id . "\n" . $e->getMessage());
+                debugLog("Task_errors", "Failure to create tasks for habit_id: " . $habit_id, $e, $sql, $values);
             }
         }
 
@@ -196,18 +197,20 @@ class Task {
             $stmt->execute($values);
             return $this->_conn->lastInsertId();
         } catch (PDOException $e) {
-            exit("Failure to insert task for habit id: " . $habit_id . "\n" . $e->getMessage());
+            debugLog("Task_errors", "Failure to create task for user_id: " . $user_id, $e, $sql, $values);
+            return NULL;
         }
     }
 
     public function updateTask($task_id, $log, $progress, $complete, $date = NULL) {
         if (empty($task_id)) {
-            exit("Empty task id");
+            debugLog("Task_errors", "Called with an empty task id");
+            return false;
         }
 
         if (!empty($date)) {
             $date_sql = "date = :date,";
-            $values[':date'] = $date;
+            $date_value[':date'] = $date;
         } else {
             $date_sql = "";
         }
@@ -224,20 +227,25 @@ class Task {
                 WHERE
                     id = :task_id";
             $stmt = $this->_conn->prepare($sql);
-            $values[':complete'] = $complete;
-            $values[':log'] = $log;
-            $values[':progress'] = $progress;
-            $values[':task_id'] = $task_id;
+            $values =  [
+                ':complete'     => $complete,
+                ':log'          => $log,
+                ':progress'     => $progress,
+                ':task_id'      => $task_id
+            ];
+            $values = array_merge($date_value, $values);
             $stmt->execute($values);
             return true;
         } catch (PDOException $e) {
-            exit("Failure to update task id: " . $task_id . "\n" . $e->getMessage());
+            debugLog("Task_errors", "Failure to get tasks for user_id: " . $user_id, $e, $sql, $values);
+            return false;
         }
     }
 
     public function deleteTasksForHabit($habit_id) {
         if (empty($habit_id)) {
-            return NULL;
+            debugLog("Task_errors", "Called with an empty habit id");
+            return false;
         }
 
         try {
@@ -251,8 +259,10 @@ class Task {
                 ':habit_id' => $habit_id
             ];
             $stmt->execute($values);
+            return true;
         } catch (PDOException $e) {
-            exit("Failure to delete tasks for habit id: " . $habit_id . "\n" . $e->getMessage());
+            debugLog("Task_errors", "Failure to delete tasks for habit_id: " . $habit_id, $e, $sql, $values);
+            return false;
         }
     }
 
@@ -264,7 +274,8 @@ class Task {
     */
     public function getProgressForChart($habit_id, $start_date, $end_date) {
         if (empty($habit_id)) {
-            return NULL;
+            debugLog("Task_errors", "Called with an empty habit id");
+            return false;
         }
 
         $tasks = $this->getTasksForHabitId($habit_id, $start_date, $end_date);
@@ -295,7 +306,8 @@ class Task {
     */
     public function getCompleteForChart($habit_id, $start_date, $end_date) {
         if (empty($habit_id)) {
-            return NULL;
+            debugLog("Task_errors", "Called with an empty habit id");
+            return false;
         }
 
         $tasks = $this->getTasksForHabitId($habit_id, $start_date, $end_date);
@@ -319,7 +331,8 @@ class Task {
     */
     public function getStatusTotals($habit_id, $start_date = NULL, $end_date = NULL) {
         if (empty($habit_id)) {
-            return NULL;
+            debugLog("Task_errors", "Called with an empty habit id");
+            return false;
         }
 
         $tasks = $this->getTasksForHabitId($habit_id, $start_date, $end_date);
@@ -345,6 +358,7 @@ class Task {
     */
     public function getProgressCompute($habit_id, $compute) {
         if (empty($habit_id) || $compute == 0) {
+            debugLog("Task_errors", "Called with habit id: {$habit_id} and compute: {$compute}");
             return NULL;
         }
 
@@ -365,8 +379,9 @@ class Task {
         } else if ($compute == 2) {
             if ($count == 0) return 0;
             return number_format($progress / $count, 2);
-        } else {
-            exit("Not a valid compute value: " . $compute);
+        } else {            
+            debugLog("Task_errors", "Not a valid compute value. Compute: {$compute}");
+            return NULL;
         }
     }
 }

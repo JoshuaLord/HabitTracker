@@ -10,7 +10,8 @@ $chart_obj = new Chart;
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 } else {
-    header("Location: habits.php");
+    $_POST['error_message'] = "An error has occured. Please try again.";
+    header("Location: dashboard.php");
 }
 
 $habit = $habit_obj->getHabit($id);

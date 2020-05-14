@@ -29,7 +29,8 @@ class Habit {
             $stmt->execute($values);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get habit from habit id: " . $id . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to get habit for id: " . $id, $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -67,7 +68,8 @@ class Habit {
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get habits from habit id: " . $ids . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to get habits from string of ids: " . $ids, $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -92,7 +94,8 @@ class Habit {
             $stmt->execute($values);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get habits for user_id: " . $user_id . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to get habits for user_id: " . $user_id, $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -134,7 +137,8 @@ class Habit {
             $stmt->execute($values);
             return $this->_conn->lastInsertId();
         } catch (PDOException $e) {
-            exit("Failure to insert a habit.\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to create habit", $e, $sql, $values);
+            return NULL;
         }
     }
 
@@ -170,13 +174,14 @@ class Habit {
             ];
             $stmt->execute($values);
         } catch (PDOException $e) {
-            exit("Failure to extend a habit for id: " . $habit['id'] . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to extend habit for id: " . $habit['id'], $e, $sql, $values);
+            return NULL;
         }
     }
 
     public function deleteHabit($id) {
         if (empty($id)) {
-            return NULL;
+            return false;
         }
 
         try {
@@ -190,8 +195,10 @@ class Habit {
                 ':id' => $id
             ];
             $stmt->execute($values);
+            return true;
         } catch (PDOException $e) {
-            exit("Failure to delete habit for id: " . $id . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to delete habit for id: " . $id, $e, $sql, $values);
+            return false;
         }
     }
 
@@ -219,7 +226,8 @@ class Habit {
             $stmt->execute($values);
             $finishedHabits = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            exit("Failure to get habits finished user_id: " . $user_id . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to get finished and uncompleted habits for user_id: " . $user_id, $e, $sql, $values);
+            return false;
         }
 
         $finished = [];
@@ -233,7 +241,7 @@ class Habit {
 
     public function setComplete($id) {
         if (empty($id)) {
-            return NULL;
+            return false;
         }
 
         try {
@@ -251,7 +259,8 @@ class Habit {
             $stmt->execute($values);
             return true;
         } catch (PDOException $e) {
-            exit("Failure to complete habit for id: " . $id . "\n" . $e->getMessage());
+            debugLog("Habit_errors", "Failure to set habit complete for id: " . $id, $e, $sql, $values);
+            return false;
         }
     }
 }

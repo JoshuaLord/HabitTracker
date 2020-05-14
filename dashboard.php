@@ -177,6 +177,12 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
     });
+
+    $(document).ready(function () {
+        <?php if (!empty($_POST['error_message'])) { ?>
+        alert(<?php echo $_POST['error_message']; ?>);
+        <?php $_POST['error_message'] = ""; } ?>
+    });
     </script>
 </body>
 </html>
