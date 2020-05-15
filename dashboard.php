@@ -136,7 +136,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
             $count = 0;
             foreach ($missed_tasks as $task) { 
                 $habit = $habit_obj->getHabit($task['habit_id']); 
-                $formid = "form" . $count++; 
+                $formid = "form-missed" . $count++; 
             ?>
             <tr>
                 <form id="<?php echo $formid?>" method="POST" action="update_task.php" target="dummyframe"></form>

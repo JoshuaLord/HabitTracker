@@ -10,7 +10,7 @@ if (isset($_POST['task_id'])) {
     $progress = isset($_POST['progress']) ? $_POST['progress'] : NULL;
     $complete = isset($_POST['complete']) ? 1 : 0;
 
-    $task_obj->updateTask($task_id, $log, $progress, $complete);
+    $updated = $task_obj->updateTask($task_id, $log, $progress, $complete);
 }
 
 ?>
