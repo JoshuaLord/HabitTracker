@@ -202,9 +202,8 @@ class Task {
         }
     }
 
-    public function updateTask($task_id, $log, $progress, $complete, $date = NULL) {
-        if (empty($task_id)) {
-            debugLog("Task_errors", "Called with an empty task id");
+    public function updateTask($id, $log, $progress, $complete, $date = NULL) {
+        if (empty($id)) {
             return false;
         }
 
@@ -213,6 +212,7 @@ class Task {
             $date_value[':date'] = $date;
         } else {
             $date_sql = "";
+            $date_value = [];
         }
 
         try {
@@ -225,19 +225,19 @@ class Task {
                     log = :log,
                     progress = :progress
                 WHERE
-                    id = :task_id";
+                    id = :id";
             $stmt = $this->_conn->prepare($sql);
-            $values =  [
+            $values = [
                 ':complete'     => $complete,
                 ':log'          => $log,
                 ':progress'     => $progress,
-                ':task_id'      => $task_id
+                ':id'           => $id
             ];
             $values = array_merge($date_value, $values);
             $stmt->execute($values);
             return true;
         } catch (PDOException $e) {
-            debugLog("Task_errors", "Failure to get tasks for user_id: " . $user_id, $e, $sql, $values);
+            debugLog("Task_errors", "Failure to update task for id: " . $id, $e, $sql, $values);
             return false;
         }
     }
