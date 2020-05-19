@@ -1,7 +1,9 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
 $habit_obj = new Habit;
+$task_obj = new Task;
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -12,7 +14,31 @@ if (isset($_GET['id'])) {
 
 $habit = $habit_obj->getHabit($id);
 
+$tasks = $task_obj->getTasksForHabitId($habit['id']);
+
+usort($tasks, function($a, $b) {
+    return $a['date'] - $b['date'];
+});
+
+$last_task = end($tasks); // grab the most recent task
+$missed_day = $last_task['date'] + strtotime("+ 1 day", 0); // increment task by one day to get first missed day
+$today = time();
+$daysArray = explode(",", $habit['days']); // 'Monday', 'Tuesday', etc
+$fill_flag = false;
+
+// while missed day is before today
+while ($missed_day < $today) {
+    $day = date("l", $missed_day); // day of the week in text
+
+    if (in_array($day,$daysArray)) { // if the missed day is on a day that would've had a task
+        $fill_flag = true;
+        break;
+    }
+
+    $missed_day += strtotime("+ 1 day", 0);
+}
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -32,6 +58,10 @@ $habit = $habit_obj->getHabit($id);
     #compute-group {
         display: none;
     }
+
+    #fill {
+        width: 20px;
+    }    
     </style>
 </head>
 <body>
@@ -41,7 +71,7 @@ $habit = $habit_obj->getHabit($id);
         <p class="text-center">If you'd like to update your habit's details, please do so below!</p>
         <hr class="mb-5">
 
-        <form action="extend_habit_submit.php" method="POST">
+        <form action="extend_habit_submit.php" method="POST" class="mb-5">
             <div class="form-group mb-4">
                 <label><strong>Name</strong></label>
                 <input type="text" class="form-control" id="name" name="name" value="<?php echo $habit['name'] ?>" placeholder="Your habit's name" required/>
@@ -82,6 +112,15 @@ $habit = $habit_obj->getHabit($id);
                     <label class="form-check-label">Neither</label>
                 </div>
             </div>
+
+            <?php if ($fill_flag) { ?>
+            <div class="form-group mb-4">
+                <label><strong>Fill In Missed Tasks</strong></label>
+                <span>You have some tasks you missed between when your habit ended until now! <br>Would you like to fill in those tasks?</span>
+                <input type="checkbox" class="form-control" id="fill" name="fill" optional/>
+            </div>
+            <input type="hidden" name="last_task_date" value="<?php echo $last_task['date'] ?>"/>
+            <?php } ?>
 
             <input type="hidden" name="user_id" value="<?php echo $user_id ?>"/>
             <input type="hidden" name="id" value="<?php echo $id ?>"/>

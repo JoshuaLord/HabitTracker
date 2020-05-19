@@ -104,14 +104,14 @@ class Task {
      * RETURNS 
      * $inserted    - number of tasks created/inserted for the habit
     */
-    public function createTasks($habit_id, $end_date, $days) {
+    public function createTasks($habit_id, $end_date, $days, $start_date = NULL) {
         if (empty($habit_id) || empty($end_date)) {
             exit("Empty parameter in createTasks()");
         }
 
         $daysArray = explode(",", $days);
         $dates_to_add = [];
-        $task_unix = time(); // date of the task in unix time
+        $task_unix = !empty($start_date) ? $start_date : time();  // date of the task in unix time
         $task_date = date("Y-m-d", $task_unix);
 
         $increment = '+ 1 days';
