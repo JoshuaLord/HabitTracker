@@ -1,11 +1,19 @@
 <?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
+$habit_obj = new Habit;
+
 function active($curr_page) {
     $url_array = explode('/', $_SERVER['REQUEST_URI']);
     $url = end($url_array);
+    $url = substr($url, 0, strpos($url, "?")); // if any get variables, delete them and the ?
     if ($curr_page == $url) {
         echo 'active';
     }
 }
+
+// check to see if any habits are complete
+$finishedHabits = $habit_obj->checkHabitFinished($_SESSION['user_id']);
 ?>
 <header>
     <!--
@@ -39,11 +47,13 @@ function active($curr_page) {
                     <li class="nav-item">
                         <a class="nav-link <?php echo active("habits.php")?>" href="habits.php">Habits</a>
                     </li>
+                    <?php if (!empty($finishedHabits)) { ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo active("habit_complete.php")?>" href="habit_complete.php?ids=<?php echo $finishedHabits ?>">Complete</a>
+                    </li>
+                    <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link <?php echo active("profile.php")?>" href="profile.php">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo active("tickets.php")?>" href="tickets.php">Tickets</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?php echo active("logout.php")?>" href="logout.php">Logout</a>

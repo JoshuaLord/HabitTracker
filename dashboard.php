@@ -54,7 +54,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
         padding: 20px 15px;
     }
 
-    #complete {
+    .task-checkbox {
         width: 20px;
         display: inline-block;
     }
@@ -107,7 +107,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
                 <?php if ($habit['unit']) { ?>
                 <td width=200>
                     <div class="input-group">
-                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" id="progress" name="progress" 
+                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" name="progress" 
                                 value="<?php if (!empty($task['progress'])) echo $task['progress']; ?>" <?php if (empty($habit['unit'])) echo "disabled"?> onChange="this.form.submit()">
                         <div class="input-group-append">
                             <span class="input-group-text"><?php echo $habit['unit']?></span>
@@ -116,7 +116,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
                 </td>
                 <?php }?>
                 <td width=100>
-                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" id="complete" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
+                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
                 </td>
                 <input form="<?php echo $formid?>" type="hidden" name="task_id" value="<?php echo $task['id']?>">
             </tr>
@@ -147,7 +147,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
                 <?php if ($habit['unit']) { ?>
                 <td width=200>
                     <div class="input-group">
-                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" id="progress" name="progress" 
+                        <input form="<?php echo $formid?>" type="number" class="form-control text-center" name="progress" 
                                 value="<?php if (!empty($task['progress'])) echo $task['progress']; ?>" <?php if (empty($habit['unit'])) echo "disabled"?> onChange="this.form.submit()">
                         <div class="input-group-append">
                             <span class="input-group-text"><?php echo $habit['unit']?></span>
@@ -156,7 +156,7 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
                 </td>
                 <?php }?>
                 <td width=100>
-                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" id="complete" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
+                    <input form="<?php echo $formid?>" type="checkbox" class="form-control task-checkbox" name="complete" <?php if ($task['complete']) echo "checked"; ?> onChange="this.form.submit()"/>
                 </td>
                 <input form="<?php echo $formid?>" type="hidden" name="task_id" value="<?php echo $task['id']?>">
             </tr>
