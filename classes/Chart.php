@@ -86,8 +86,9 @@ class Chart {
      * $index - number of the chart on the page (1st, 2nd, 3rd, etc)
      * $x_data - used in the charts data set, should be a 1D array
      * $x_data_labels - the labels of the $x_data, also a 1D array of the same length
+     * $x_complete - whether the task was completed or not
      */
-    public function getScript($chart, $index, $x_data, $x_data_labels) {
+    public function getScript($chart, $index, $x_data, $x_data_labels, $x_complete) {
         if (empty($chart) || ($index < 0) || empty($x_data)) {
             return NULL;
         }
@@ -100,7 +101,7 @@ class Chart {
 
         switch ($chart['type']) {
             case 0: // line chart
-                return $this->getLineScript($chart, $habit, $name, $index, $x_data, $x_data_labels);
+                return $this->getLineScript($chart, $habit, $name, $index, $x_data, $x_data_labels, $x_complete);
             break;
             case 1: // pie chart
                 return $this->getPieScript($chart, $habit, $name, $index);
@@ -116,14 +117,22 @@ class Chart {
      * $index - number of the chart on the page (1st, 2nd, 3rd, etc)
      * $x_data - used in the charts data set, should be a 1D array
      * $x_data_labels - the labels of the $x_data, also a 1D array of the same length
+     * $x_complete - whether the task was completed or not
      */
-    private function getLineScript($chart, $habit, $name, $index, $x_data, $x_data_labels) {
+    private function getLineScript($chart, $habit, $name, $index, $x_data, $x_data_labels, $x_complete) {
         // the name of the canvas grabbed is Chart_#Canvas where # is the index of the chart on the page
         // the name of the chart itself is Chart_#
 
         if (is_integer($x_data_labels[0])) {
             foreach ($x_data_labels as $index => $data) {
                 $x_data_labels[$index] = "'" . date("M j", $data) . "'";
+            }
+        }
+
+        foreach ($x_complete as $key => $complete) {
+            if (!$complete) {
+                unset($x_data[$key]);
+                unset($x_data_labels[$key]);
             }
         }
 

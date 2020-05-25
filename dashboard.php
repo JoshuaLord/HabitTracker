@@ -58,6 +58,10 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
         width: 20px;
         display: inline-block;
     }
+
+    .streak {
+        font-size: 12px;
+    }
     </style>
 
     <title>Habit Tracker</title>
@@ -97,10 +101,33 @@ $missed_tasks = $task_obj->getTasksForUserId($user_id, $start, $end, 0);
             foreach ($tasks_today as $task) { 
                 $habit = $habit_obj->getHabit($task['habit_id']); 
                 $formid = "form" . $count++; 
+                
+                $prev_tasks = $task_obj->getTasksForHabitId($habit['id'], NULL, time());
+                $streak = 0; // see how many tasks the user has completed in a row
+
+                // sort the list in descending order based on date
+                usort($prev_tasks, function($a, $b) {
+                    return $b['date'] - $a['date'];
+                });
+
+                foreach ($prev_tasks as $prev_task) {
+                    if ($prev_task['complete']) {
+                        $streak += 1;
+                    } else {
+                        break;
+                    }
+
+                }
+                
             ?>
             <tr>
                 <form id="<?php echo $formid?>" method="POST" action="update_task.php" target="dummyframe"></form>
-                <td width=225 class="habit_link" style="cursor: pointer" onclick="document.location = 'view_habit.php?id=<?php echo $habit['id']?>'"><h5><?php echo $habit['name'] ?></h5></td>
+                <td width=225 class="habit_link" style="cursor: pointer" onclick="document.location = 'view_habit.php?id=<?php echo $habit['id']?>'">
+                    <h5><?php echo $habit['name'] ?></h5>
+                    <?php if ($streak) { ?>
+                    <span class="streak"><?php echo $streak ?> day streak!</span>
+                    <?php } ?>
+                </td>
                 <td width=300 <?php if (empty($habit['unit'])) echo "colspan='2'" ?>>
                     <textarea form="<?php echo $formid?>" type="text" class="form-control" name="log" onChange="this.form.submit()"><?php echo $task['log']; ?></textarea>
                 </td>
