@@ -13,7 +13,7 @@ function active($curr_page) {
 }
 
 // check to see if any habits are complete
-if (!empty($user_id)) {
+if (!empty($_SESSION['user_id'])) {
     $finishedHabits = $habit_obj->checkHabitFinished($_SESSION['user_id']);
 } else {
     $finishedHabits = NULL;
