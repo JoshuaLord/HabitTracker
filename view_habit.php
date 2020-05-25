@@ -45,6 +45,9 @@ usort($tasks, function ($a, $b) {
     return $a['date'] - $b['date'];
 });
 
+$taskStatuses = $task_obj->getStatusTotals($id, NULL, time());
+$completed = $taskStatuses['complete'];
+
 // grab charts
 $charts = $chart_obj->getChartsFromHabit($habit['id']);
 ?>
@@ -73,6 +76,12 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
         display: inline-block;
         width: 400px;
         height: 400px;
+    }
+
+    #details span {
+        width: 100%;
+        text-align: center;
+        display: block;
     }
     </style>
 </head>
@@ -106,21 +115,35 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
         <div class="mt-5 row">
             <div class="col-2"></div>
             <h1 class="col-8 text-center display-4"><?php echo $habit['name']?></h1>
-            <h3 class="col-2 d-flex justify-content-end align-items-end">Ends on <?php echo date("M d", $habit['end_date']) ?></h3>
+            <div class="col-2"></div>
         </div>
-        <p class="text-center"><?php echo $habit['description']?></p>
-        <p class="days"><?php echo str_replace(",", ", ", $habit['days']); ?></p>
+        <hr class="mb-3">
+        <div id="details" class="my-4 row">
+            <div class="col-4">
+                <span><strong>Description:</strong></span>
+                <span><?php echo $habit['description']?></span>
+            </div>
+            <div class="col-4">
+                <span><strong>Completed On:</strong></span>
+                <span><?php echo str_replace(",", ", ", $habit['days']); ?></span>
+            </div>
+            <div class="col-4">
+                <span><strong>Ends On:</strong></span>
+                <span><?php echo date("l, M d", $habit['end_date']) ?></span>
+            </div>
+        </div>
         <hr class="mb-3">
 
         <div class="d-flex justify-content-around mb-3">
+            <?php if ($completed > 1) { ?>
             <?php foreach ($charts as $index => $chart) { ?>
             <div class="chart"><?php echo $chart_obj->getCanvas($chart, $index) ?></div>
             <?php } ?>  
+            <?php } else { ?>
+            <p class="my-3 text-center">You haven't completed enough tasks yet to display your charts! Go get after it!</p>
+            <?php } ?>
         </div>
         <hr class="mb-3">
-
-        <h4>Days I Complete My Habit</h4>
-        <p><?php echo str_replace(",", ", ", $habit['days']); ?></p>
 
         <h2 class="text-center">Tasks from <?php echo date("M d", $start) ?> to <?php echo date("M d", $end) ?></h2>
         <div class="row my-3">
@@ -240,10 +263,11 @@ $charts = $chart_obj->getChartsFromHabit($habit['id']);
     <?php foreach ($charts as $index => $chart) {    
     if ($chart['y_axis'] == 0) { // completed
         $data = $task_obj->getCompleteForChart($chart['habit_id'], $habit['create_date'], time());
+        $data['complete'] = NULL;
     } else {
         $data = $task_obj->getProgressForChart($chart['habit_id'], $habit['create_date'], time());
     }
-    echo $chart_obj->getScript($chart, $index, $data['compute'], $data['date']);
+    echo $chart_obj->getScript($chart, $index, $data['compute'], $data['date'], $data['complete']);
     } ?>
     </script>
 </body>

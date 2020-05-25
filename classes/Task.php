@@ -282,6 +282,7 @@ class Task {
 
         $progress = [];
         $date = [];
+        $complete = [];
 
         foreach ($tasks as $task) {
             if (empty($task['progress'])) {
@@ -290,10 +291,12 @@ class Task {
                 array_push($progress, $task['progress']);
             }
             array_push($date, $task['date']);
+            array_push($complete, $task['complete']);
         }  
 
         $array['compute'] = $progress;
         $array['date'] = $date;
+        $array['complete'] = $complete;
 
         return $array;
     }
