@@ -1,7 +1,7 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/User.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/File.php';
+require_once 'classes/User.php';
+require_once 'classes/File.php';
 $user_obj = new User;
 $file_obj = new File;
 

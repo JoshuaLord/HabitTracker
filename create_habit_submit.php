@@ -1,8 +1,9 @@
 <?php
+$basepath = __DIR__;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Chart.php';
+require_once $basepath . 'classes/Habit.php';
+require_once $basepath . 'classes/Task.php';
+require_once $basepath . 'classes/Chart.php';
 $habit_obj = new Habit;
 $task_obj = new Task;
 $chart_obj = new Chart;

@@ -1,7 +1,7 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/User.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
+require_once 'classes/User.php';
+require_once 'classes/Habit.php';
+require_once 'classes/Task.php';
 $user_obj = new User;
 $habit_obj = new Habit;
 $task_obj = new Task;

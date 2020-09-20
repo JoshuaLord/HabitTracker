@@ -1,8 +1,8 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Chart.php';
+require_once 'classes/Habit.php';
+require_once 'classes/Task.php';
+require_once 'classes/Chart.php';
 $habit_obj = new Habit;
 $task_obj = new Task;
 $chart_obj = new Chart;

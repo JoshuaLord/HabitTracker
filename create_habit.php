@@ -1,5 +1,6 @@
 <?php
-    $user_id = $_SESSION['user_id'];
+$basepath = __DIR__;
+$user_id = $_SESSION['user_id'];
 ?>
 
 <!doctype html>
@@ -11,7 +12,7 @@
 
     <title>Habit Tracker</title>
 
-    <?php include("inc/css.php"); ?>
+    <?php require_once $basepath . "inc/css.php"; ?>
 
     <style>
     .form-check-label {

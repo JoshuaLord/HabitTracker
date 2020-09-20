@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
+require_once 'classes/Task.php';
 $task_obj = new Task;
 
 if (isset($_POST['task_id'])) {

@@ -1,6 +1,6 @@
 <?php
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
+$basepath = __DIR__;
+require_once __FILE__ . '/../classes/Habit.php';
 $habit_obj = new Habit;
 
 function active($curr_page) {

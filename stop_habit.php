@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
+require_once 'classes/Habit.php';
 $habit_obj = new Habit;
 
 if (isset($_GET['id'])) {

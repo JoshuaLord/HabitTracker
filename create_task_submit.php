@@ -1,6 +1,7 @@
 <?php
+$basepath = __DIR__;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
+require_once $basepath . 'classes/Task.php';
 $task_obj = new Task;
 
 date_default_timezone_set('America/New_York');

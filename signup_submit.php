@@ -1,8 +1,8 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/User.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Encrypt.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/File.php';
+require_once 'classes/User.php';
+require_once 'classes/Encrypt.php';
+require_once 'classes/File.php';
 $user_obj = new User;
 $encrypt_obj = new Encrypt;
 $file_obj = new File;

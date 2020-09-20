@@ -1,6 +1,7 @@
 <?php
+$basepath = __DIR__;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require_once $basepath . '../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '../..');
 $dotenv->load();
@@ -49,9 +50,10 @@ function generateCallTrace()
 }
 
 function debugLog($log_filename, $message, $exception = NULL, $sql = NULL, $values = NULL) {
+    $basepath = __DIR__;
     $backtrace = debug_backtrace();
     $caller = array_shift($backtrace);
-    $file = substr($caller['file'], strlen($_SERVER['DOCUMENT_ROOT']) + 1); // don't need the starting /
+    $file = substr($caller['file'], $_SERVER['DOCUMENT_ROOT'] + 1); // don't need the starting /
     $line = $caller['line'];    
 
     $content  = "--------------------------------------------------------------" . "\n";
@@ -73,5 +75,5 @@ function debugLog($log_filename, $message, $exception = NULL, $sql = NULL, $valu
 
     $content .= "\n";
 
-    file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/logs/" . $log_filename . ".log", $content, FILE_APPEND);
+    file_put_contents($basepath . "../logs/" . $log_filename . ".log", $content, FILE_APPEND);
 }   

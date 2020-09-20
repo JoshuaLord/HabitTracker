@@ -1,6 +1,7 @@
 <?php
+$basepath = __DIR__;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/connect.php';
+require_once $basepath . '../inc/connect.php';
 
 class Chart {
     function __construct() {
@@ -93,7 +94,7 @@ class Chart {
             return NULL;
         }
 
-        require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Habit.php';
+        require_once $basepath . 'Habit.php';
         $habit_obj = new Habit;
         $habit = $habit_obj->getHabit($chart['habit_id']);
 
@@ -179,7 +180,7 @@ class Chart {
         // the name of the canvas grabbed is Chart_#Canvas where # is the index of the chart on the page
         // the name of the chart itself is Chart_#
 
-        require_once $_SERVER['DOCUMENT_ROOT'] . '/classes/Task.php';
+        require_once $basepath . 'Task.php';
         $task_obj = new Task;
 
         $status_totals = $task_obj->getStatusTotals($habit['id'], $habit['create_date'], time());

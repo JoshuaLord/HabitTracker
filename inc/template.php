@@ -11,17 +11,17 @@
 
     <title>Habit Tracker</title>
 
-    <?php include("inc/css.php"); ?>    
+    <?php include("css.php"); ?>    
 </head>
 <body>
-    <?php include("inc/navbar.php");?>
+    <?php include("navbar.php");?>
 
     <div class="container">
         <h1 class="mt-5 text-center display-4">Page Name</h1>
         <hr class="mb-5">
     </div>
 
-    <?php include("inc/footer.php"); ?>
-    <?php include("inc/externals.php"); ?>
+    <?php include("footer.php"); ?>
+    <?php include("externals.php"); ?>
 </body>
 </html>

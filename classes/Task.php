@@ -1,6 +1,7 @@
 <?php
+$basepath = __DIR__;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/connect.php';
+require_once $basepath . '../inc/connect.php';
 
 date_default_timezone_set('America/New_York');
 
